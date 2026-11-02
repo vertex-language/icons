@@ -74,12 +74,12 @@ let droppedAtRoot: [string] = ["width", "height"]
 /// Names a set can't use as they are.
 let reserved: [string] = ["Self", "Any", "Type", "Protocol", "Never", "Some", "Ok", "None"]
 
-func fail(_ s: string) -> Never {
+func fail(s: string) -> Never {
     print("gen: \(s)")
     process.Exit(1)
 }
 
-func escapeAttribute(_ s: string) -> string {
+func escapeAttribute(s: string) -> string {
     var out = ""
     for ch in s {
         switch ch {
@@ -93,7 +93,7 @@ func escapeAttribute(_ s: string) -> string {
 }
 
 /// Text in a Vertex string literal.
-func literal(_ s: string) -> string {
+func literal(s: string) -> string {
     var out = ""
     for ch in s {
         switch ch {
@@ -109,10 +109,10 @@ func literal(_ s: string) -> string {
 /// An element and what's inside it, as markup. The <svg> gets
 /// react-icons' defaults under its own attributes: the current color for
 /// fill and stroke, and no stroke width, as IconBase draws it.
-func markup(_ v: json.Value, root: bool) -> string {
+func markup(v: json.Value, root: bool) -> string {
     guard let o = v.Object, let tag = o["tag"]?.String else { return "" }
     var attrs: [(string, string)] = []
-    func set(_ k: string, _ value: string) {
+    func set(k: string, value: string) {
         for i in 0..<attrs.count where attrs[i].0 == k {
             attrs[i].1 = value
             return
@@ -144,7 +144,7 @@ func markup(_ v: json.Value, root: bool) -> string {
 }
 
 /// The icon's name in its package: the set's prefix taken off.
-func vertexName(_ reactName: string, _ prefix: string) -> string {
+func vertexName(reactName: string, prefix: string) -> string {
     var n = reactName
     if n.hasPrefix(prefix) { n = String(n.dropFirst(prefix.count)) }
     if n.isEmpty { n = reactName }
@@ -155,13 +155,13 @@ func vertexName(_ reactName: string, _ prefix: string) -> string {
 
 /// The icons of a set's index.js: each a name and the JSON GenIcon is
 /// given.
-func iconsIn(_ js: string) -> [(string, string)] {
+func iconsIn(js: string) -> [(string, string)] {
     var out: [(string, string)] = []
     let b = [uint8](js.utf8)
     let head = [uint8]("module.exports.".utf8)
     let gen = [uint8]("GenIcon(".utf8)
     let tail = [uint8](")(props);".utf8)
-    func find(_ needle: [uint8], from: int) -> int {
+    func find(needle: [uint8], from: int) -> int {
         var i = from
         while i + needle.count <= b.count {
             if b[i] == needle[0] {

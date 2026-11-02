@@ -27,7 +27,7 @@ public struct Icon: Equatable {
     /// single-quoted.
     public let Markup: string
 
-    public init(_ name: string, _ markup: string) {
+    public init(name: string, markup: string) {
         Name = name
         Markup = markup
     }
@@ -66,7 +66,7 @@ public struct Icon: Equatable {
         return p.element() ?? Element(Tag: "svg", Attributes: [], Children: [])
     }
 
-    func rootAttribute(_ name: string) -> string? {
+    func rootAttribute(name: string) -> string? {
         for (k, v) in Root.Attributes where k == name { return v }
         return nil
     }
@@ -96,7 +96,7 @@ public struct Element: Equatable {
 // once.
 var drawings: [string: svg.Document] = [:]
 
-func drawingFor(_ markup: string) -> svg.Document? {
+func drawingFor(markup: string) -> svg.Document? {
     if let d = drawings[markup] { return d }
     let file = "<svg xmlns='http://www.w3.org/2000/svg'" + string(decoding: [uint8]([uint8](markup.utf8).dropFirst(4)), as: UTF8.self)
     guard let doc = svg.ParseDocument([uint8](file.utf8)) else { return nil }
@@ -111,7 +111,7 @@ struct parser {
     let b: [uint8]
     var i = 0
 
-    init(_ s: string) {
+    init(s: string) {
         b = [uint8](s.utf8)
     }
 
@@ -175,7 +175,7 @@ struct parser {
     }
 }
 
-func unescape(_ v: [uint8]) -> string {
+func unescape(v: [uint8]) -> string {
     if !v.contains(0x26) { return string(decoding: v, as: UTF8.self) }
     var s = string(decoding: v, as: UTF8.self)
     for (e, c) in [("&quot;", "\""), ("&apos;", "'"), ("&#39;", "'"), ("&lt;", "<"), ("&gt;", ">"), ("&amp;", "&")] {
@@ -184,7 +184,7 @@ func unescape(_ v: [uint8]) -> string {
     return s
 }
 
-func replaced(_ s: string, _ from: string, _ to: string) -> string {
+func replaced(s: string, from: string, to: string) -> string {
     let a = [uint8](s.utf8)
     let f = [uint8](from.utf8)
     var out: [uint8] = []
@@ -205,7 +205,7 @@ func replaced(_ s: string, _ from: string, _ to: string) -> string {
     return string(decoding: out, as: UTF8.self)
 }
 
-func numbersIn(_ s: string) -> [float32] {
+func numbersIn(s: string) -> [float32] {
     var out: [float32] = []
     for part in s.split(whereSeparator: { $0 == " " || $0 == "," }) {
         if let v = float32(String(part)) { out.append(v) }
@@ -213,7 +213,7 @@ func numbersIn(_ s: string) -> [float32] {
     return out
 }
 
-func trimmedNumber(_ v: float32) -> string {
+func trimmedNumber(v: float32) -> string {
     if v == float32(int(v)) { return "\(int(v))" }
     return "\(v)"
 }
