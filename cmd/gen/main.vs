@@ -99,7 +99,8 @@ func literal(s: string) -> string {
         switch ch {
         case "\\": out += "\\\\"
         case "\"": out += "\\\""
-        case "\n": out += " "
+        // "\r\n" is one Character, which "\n" doesn't match.
+        case "\n", "\r\n", "\r": out += " "
         default: out.append(ch)
         }
     }
